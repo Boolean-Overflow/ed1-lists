@@ -7,7 +7,7 @@ SCLL* scll_push_back(SCLL* head, char c);
 SCLL* scll_remove(SCLL* head, char c);
 SCLL* scll_print(SCLL* head, char c);
 SCLL* scll_find(SCLL* head, char c);
-SCLL* scll_clear(SCLL* head, char c);
+SCLL* scll_clear(SCLL* head);
 void scll_split(SCLL* head, SCLL** vowals_head_pointer, SCLL** consonants_head_pointer);
 
 
