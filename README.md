@@ -11,7 +11,7 @@ Second Data structures project
   are associated to it.
   ```sh
     # From the root of the project run
-    gcc main.c <...> utils/utils.c -o vector
+    gcc main.c doubly-linked-lists/dll.c utils/utils.c singly-circled-linked-lists/scll.c -o challenge
 
     #Then execute the outputed file
   ```
