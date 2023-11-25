@@ -39,12 +39,13 @@ start:
     challenge1:
       printf("========== DESAFIO I ==========\n");
       printf("1 - Inserir\n");
-      printf("2 - Remover\n");
-      printf("3 - Procurar\n");
+      printf("2 - Remover\n");//!
+      printf("3 - Procurar\n");//!
       printf("4 - Imprimir\n");
       printf("5 - Dividir lista\n");
-      printf("6 - Eliminar lista\n");
+      printf("6 - Eliminar lista\n");//!
       printf("%d - Voltar\n", (last = 7));
+      printf("[1-%d]: ", last);
       scanf("%d", &option2);
       if (option2 == last) goto start;
       invalid = option2 < 1 || option2 > last;
@@ -52,9 +53,9 @@ start:
       case 1:
         do {
           clearConsole();
-          if (head && head->value == c) printf("Nó inserido!\n");
+          // if (head && head->value == c) printf("Nó inserido!\n");
           printf("Informe uma letra\n");
-          printf("[$ para terminar]:");
+          printf("[$ para terminar]: ");
           c = getchar();
           if (c != '$') head = scll_insert(head, c);
         } while (c != '$');
@@ -80,16 +81,32 @@ start:
 
       break;
     case 2:
+    challenge2:
       printf("========== DESAFIO II ==========\n");
-      printf("1 - Inserir Rota\n");
-      printf("2 - Remover Rota\n");
-      printf("3 - Imprimir Rotas\n");
-      printf("4 - Eliminar lista de rotas\n");
+      printf("1 - Inserir Rota\n");//!
+      printf("2 - Remover Rota\n");//!
+      printf("3 - Imprimir Rotas\n");//!
+      printf("4 - Eliminar lista de rotas\n");//!
       if (0) printf("5 - Encerrar\n"), last++;
       printf("%d - Voltar\n", last);
       scanf("%d", &option2);
       if (option2 == last) goto start;
       invalid = option2 < 1 || option2 > last;
+      switch (option2) {
+      case 1:
+
+        goto challenge2;
+        break;
+      case 2:
+
+        goto challenge2;
+        break;
+      case 3:
+
+        goto challenge2;
+        break;
+      }
+
       break;
     case 3:
       printf("Muito Obrigado! ;)\n");
