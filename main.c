@@ -1,7 +1,5 @@
 #include<stdio.h>
-#include<stdlib.h>
 #include<locale.h>
-#include<ctype.h>
 #include "doubly-linked-lists/dll.h"
 #include "singly-circled-linked-lists/scll.h"
 #include "utils/utils.h"
@@ -39,11 +37,11 @@ start:
     challenge1:
       printf("========== DESAFIO I ==========\n");
       printf("1 - Inserir\n");
-      printf("2 - Remover\n");//!
-      printf("3 - Procurar\n");//!
+      printf("2 - Remover\n");
+      printf("3 - Procurar\n");
       printf("4 - Imprimir\n");
       printf("5 - Dividir lista\n");
-      printf("6 - Eliminar lista\n");//!
+      printf("6 - Eliminar lista\n");
       printf("%d - Voltar\n", (last = 7));
       printf("[1-%d]: ", last);
       scanf("%d", &option2);
@@ -90,9 +88,9 @@ start:
       printf("2 - Remover Rota\n");
       printf("3 - Adicionar Paragem\n");
       printf("4 - Remover Paragem\n");
-      printf("5 - Imprimir Rotas\n");//!
-      printf("6 - Eliminar lista de rotas\n");//!
-      if (routes) printf("7 - Maximo de passageiros na paragem de uma rota\n"), last++;//!
+      printf("5 - Imprimir Rotas\n");
+      printf("6 - Eliminar lista de rotas\n");
+      if (routes) printf("7 - Maximo de passageiros na paragem de uma rota\n"), last++;
       printf("%d - Voltar\n[1-%d]: ", last, last);
       scanf("%d", &option2);
       if (option2 == last) {
@@ -151,7 +149,7 @@ start:
     default:
       invalid = 1;
     }
-  } while ((invalid));
+  } while (invalid);
 end:
   return 0;
 }

@@ -100,9 +100,12 @@ void c2_insert(Route** routes) {
       printf("Informe o numero de passageiros da paragem:");
       scanf("%d", &qtd);
     } while (qtd < 0);
+
     stops = add_stop(stops, name, qtd);
+
     printf("Continuar a adicionar?\n[1/0]:");
-    while (!scanf("%d", &valid)) printf("Valor Inválido!\n[1/0]:"), fflush(stdin);
+    while (!scanf("%d", &valid))
+      printf("Valor Inválido!\n[1/0]:"), fflush(stdin);
   } while (valid == 1);
 
   *routes = route_insert(*routes, stops);
