@@ -6,16 +6,17 @@
 #include "singly-circled-linked-lists/scll.h"
 #include "utils/utils.h"
 
-typedef struct Node {
-  char value;
-  struct Node* next;
-} Node;
-
+typedef struct Node_Route {
+  int code;
+  struct Node_Stop* stops;
+  struct Node_Route* next, * prev;
+} Route;
 
 int main(void) {
   setlocale(0, "");
   int option = 1, invalid = 0;
 start:
+  invalid = 0;
   do {
     clearConsole();
     printf("========== VARIANTE A ==========\n");
@@ -32,8 +33,7 @@ start:
     clearConsole();
     if (invalid) printf("Opção Inválida!\n");
     SCLL* head = scll_init();
-    SCLL* vowels = NULL, * consonants = NULL;
-    char c;
+    Route* routes = init_routes();
     switch (option) {
     case 1:
     challenge1:
@@ -47,18 +47,22 @@ start:
       printf("%d - Voltar\n", (last = 7));
       printf("[1-%d]: ", last);
       scanf("%d", &option2);
-      if (option2 == last) goto start;
+      if (option2 == last) {
+        head = scll_clear(head);
+        goto start;
+      }
       invalid = option2 < 1 || option2 > last;
       switch (option2) {
       case 1:
-        do {
-          clearConsole();
-          // if (head && head->value == c) printf("Nó inserido!\n");
-          printf("Informe uma letra\n");
-          printf("[$ para terminar]: ");
-          c = getchar();
-          if (c != '$') head = scll_insert(head, c);
-        } while (c != '$');
+        c1_insert(&head);
+        goto challenge1;
+        break;
+      case 2:
+        c1_remove(&head);
+        goto challenge1;
+        break;
+      case 3:
+        c1_find(&head);
         goto challenge1;
         break;
       case 4:
@@ -67,46 +71,73 @@ start:
         goto challenge1;
         break;
       case 5:
-        result = scll_split(&head, &vowels, &consonants);
-        if (result) {
-          printf("Vogais: "), scll_print(vowels);
-          printf("Consoantes: "), scll_print(consonants);
-          vowels = scll_clear(vowels);
-          consonants = scll_clear(consonants);
-        }
-        else printf("Lista sem elementos para dividir!\n");
+        clearConsole();
+        c1_split(&head);
+        goto challenge1;
+        break;
+      case 6:
+        clearConsole();
+        head = scll_clear(head);
         goto challenge1;
         break;
       }
-
       break;
     case 2:
     challenge2:
+      last = 7;
       printf("========== DESAFIO II ==========\n");
-      printf("1 - Inserir Rota\n");//!
-      printf("2 - Remover Rota\n");//!
-      printf("3 - Imprimir Rotas\n");//!
-      printf("4 - Eliminar lista de rotas\n");//!
-      if (0) printf("5 - Encerrar\n"), last++;
-      printf("%d - Voltar\n", last);
+      printf("1 - Inserir Rota\n");
+      printf("2 - Remover Rota\n");
+      printf("3 - Adicionar Paragem\n");
+      printf("4 - Remover Paragem\n");
+      printf("5 - Imprimir Rotas\n");//!
+      printf("6 - Eliminar lista de rotas\n");//!
+      if (routes) printf("7 - Maximo de passageiros na paragem de uma rota\n"), last++;//!
+      printf("%d - Voltar\n[1-%d]: ", last, last);
       scanf("%d", &option2);
-      if (option2 == last) goto start;
+      if (option2 == last) {
+        routes = clear_routes(routes);
+        goto start;
+      }
       invalid = option2 < 1 || option2 > last;
       switch (option2) {
       case 1:
-
+        clearConsole();
+        c2_insert(&routes);
         goto challenge2;
         break;
       case 2:
-
+        clearConsole();
+        c2_remove(&routes);
         goto challenge2;
         break;
       case 3:
+        clearConsole();
+        c2_add_stop(&routes);
+        goto challenge2;
+        break;
 
+      case 4:
+        clearConsole();
+        c2_rm_stop(&routes);
+        goto challenge2;
+        break;
+      case 5:
+        clearConsole();
+        c2_print(&routes);
+        goto challenge2;
+        break;
+      case 6:
+        clearConsole();
+        routes = clear_routes(routes);
+        goto challenge2;
+        break;
+      case 7:
+        clearConsole();
+        c2_max(&routes);
         goto challenge2;
         break;
       }
-
       break;
     case 3:
       printf("Muito Obrigado! ;)\n");

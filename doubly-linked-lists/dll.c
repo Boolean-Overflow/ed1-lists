@@ -3,156 +3,165 @@
 #include<string.h>
 #include "dll.h"
 
-typedef struct Node_Stop {
+struct Node_Stop {
   char* name;
-  int passagers;
+  int passengers;
   struct Node_Stop* next, * prev;
-} Stop;
+};
 
-typedef struct Node_Route {
-  char* code;
+struct Node_Route {
+  int code;
   struct Node_Stop* stops;
   struct Node_Route* next, * prev;
-} Route;
+};
 
-Route* existe_rota(Route* route, char* c) {
+Route* init_routes() {
+  return NULL;
+}
+
+Stop* init_stops() {
+  return NULL;
+}
+
+Route* check_route(Route* route, int code) {
+  if (!route) return route;
   Route* aux = route;
-  while (aux->next != NULL && (strcmp(aux->code, c) != 0)) {
-    aux = aux->next;
-  }
-  if (strcmp(aux->code, c) == 0) return aux;
+  while (aux->next && aux->code != code) aux = aux->next;
+
+  if (aux->code == code) return aux;
+
   return NULL;
 }
-Stop* existe_paragem(Route* route, char* c) {
+
+Stop* check_stop(Route* route, char* name) {
   Stop* aux = route->stops;
-  while (aux->next != NULL && (strcmp(aux->name, c) != 0)) {
-    aux = aux->next;
-  }
-  if (strcmp(aux->name, c) == 0) return aux;;
+  while (aux->next && strcmp(aux->name, name)) aux = aux->next;
+  if (!strcmp(aux->name, name)) return aux;
   return NULL;
 }
 
-Route* inserir_rota(Route* route, char* c) {
-  Route* nova_rota = malloc(sizeof(Route));
-  nova_rota->code = c;
-  nova_rota->stops = NULL;
-  if (route == NULL) {
-    nova_rota->next = NULL;
-    nova_rota->prev = NULL;
-    route = nova_rota;
+Route* route_insert(Route* routes, Stop* stops) {
+  Route* route = malloc(sizeof(Route));
+  if (!route) {
+    printf("Erro de Alocação\n");
+    return routes;
   }
-  else {
-    route->prev = nova_rota;
-    nova_rota->prev = NULL;
-    nova_rota->next = route;
-    route = nova_rota;
+
+  route->stops = stops;
+  route->next = route->prev = NULL;
+  if (!routes) {
+    route->code = 1;
+    return route;
   }
-  return route;
-}
-Route* eliminar_rota(Route* route, char* c) {
-  Route* aux = existe_rota(route, c);
-  if (aux != NULL) {
-    Stop* p1 = aux->stops;
-    Stop* p2;
-    while (p1 != NULL) {
-      p2 = p1;
-      p1 = p1->next;
-      free(p2->name);
-      free(p2);
-    }
-    if (aux->prev == NULL) {
-      aux->next->prev = NULL;
-    }
-    else if (aux->next == NULL) {
-      aux->prev->next = NULL;
-    }
-    else {
-      aux->next->prev = aux->prev;
-      aux->prev->next = aux->next;
-    }
-    free(aux->code);
-    free(aux);
-  }
-  else {
-    printf("Rota nao encontrada\n");
-  }
-  return route;
-}
-int contar_rotas(Route* route) {
-  if (!route) return 0;
-  else return (1 + contar_rotas(route->next));
+
+  route->code = routes->code + 1;
+  routes->prev = route;
+  route->next = routes;
+  routes = route;
+
+  return routes;
 }
 
-int contar_paragens(Stop* stop) {
-  if (!stop) return 0;
-  else return (1 + contar_paragens(stop->next));
+Route* remove_route(Route* routes, int code) {
+  Route* route = check_route(routes, code);
+  if (!route) {
+    printf("Rota não encontrada!\n");
+    return routes;
+  }
+  Stop* p = route->stops;
+  while (p) {
+    Stop* p2 = p;
+    free(p2);
+    p = p->next;
+  }
+
+  if (route->prev) route->prev->next = route->next;
+
+  if (route->next) {
+    if (!route->prev) routes = route->next;
+    route->next->prev = route->prev;
+  }
+
+  free(route);
+  return routes;
 }
 
-Stop* inserir_paragem(Route* route, int qtd, char* name) {
+Stop* add_stop(Stop* stops, char* name, int qtd) {
   Stop* stop = malloc(sizeof(Stop));
-  stop->name = name;
-  stop->passagers = qtd;
-
-  if (route->stops == NULL) {
-    stop->next = stop->prev = NULL;
-    route->stops = stop;
+  if (!stop) {
+    printf("Erro de Alocação\n");
+    return NULL;
   }
+  stop->name = malloc(20);
+  strcpy(stop->name, name);
 
-  route->stops->prev = stop;
-  stop->next = route->stops;
-  stop->prev = NULL;
+  stop->passengers = qtd;
+  stop->next = stop->prev = NULL;
+
+  if (!stops) return stop;
+
+  stop->next = stops;
+  stops->prev = stop;
 
   return stop;
 }
 
-Stop* eliminar_paragem(Route* r, char* s) {
-  Stop* aux = existe_paragem(r, s);
-  if (aux != NULL) {
-    if (aux->prev == NULL) {
-      aux->next->prev = NULL;
-    }
-    else if (aux->next == NULL) {
-      aux->prev->next = NULL;
-    }
-    else {
-      aux->next->prev = aux->prev;
-      aux->prev->next = aux->next;
-    }
-    free(aux);
-  }
-  else {
+Stop* remove_stop(Route* route, char* name) {
+  Stop* stop = check_stop(route, name);
+  if (!stop) {
     printf("Paragem nao encontrada.\n");
+    return route->stops;
   }
-  return r->stops;
+
+  if (stop->prev) stop->prev->next = stop->next;
+  if (stop->next) {
+    if (!stop->prev) route->stops = stop->next;
+    stop->next->prev = stop->prev;
+  }
+  free(stop->name);
+  free(stop);
+  return route->stops;
 }
 
-void imprimir_rota(Route* r, char* c) {
-  Route* aux1 = existe_rota(r, c);
-  if (aux1 != NULL) {
-    printf("Rota %s: \n", aux1->code);
-    Stop* aux2 = aux1->stops;
-    while (aux2 != NULL) {
-      printf("Paragem %s -> Passageiros: %i\n", aux2->name, aux2->passagers);
-      aux2 = aux2->next;
-    }
-  }
-  else {
+void print_route(Route* routes, int code) {
+  Route* route = check_route(routes, code);
+  if (!route) {
     printf("Rota nao encontrada.\n");
+    return;
+  }
+
+  printf("Rota %d: \n", route->code);
+  Stop* stops = route->stops;
+  while (stops) {
+    printf(" [ %d ] %s", stops->passengers, stops->name);
+    stops = stops->next;
   }
 }
 
-int numero_passageiros(Route* r, char* c) {
-  if (existe_rota(r, c)) {
-    int cont = 0;
-    Stop* aux = r->stops;
-    while (aux != NULL) {
-      cont += aux->passagers;
-      aux = aux->next;
-    }
-    return cont;
+Stop* best_stop(Route* routes, int code) {
+  Route* route = check_route(routes, code);
+  if (!route) return NULL;
+
+
+  int m = 0;
+  Stop* stops = route->stops, * stop = NULL;
+  while (stops) {
+    if (stops->passengers > m) stop = stops, m = stop->passengers;
+    stops = stops->next;
   }
+
+  return stop;
+}
+
+Route* clear_routes(Route* routes) {
+  if (!routes) printf("Lista Vazia\n");
   else {
-    printf("Rota inexistente.\n");
-    return 0;
+    while (routes) {
+      Route* aux = routes;
+      routes = routes->next;
+      remove_route(aux, aux->code);
+    }
   }
+
+  return routes;
 }
